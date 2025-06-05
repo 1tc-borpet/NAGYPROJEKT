@@ -46,7 +46,11 @@
                         <TextBlock Text="Műfaj:" Width="80" VerticalAlignment="Center"/>
                         <ComboBox x:Name="genreComboBox" Width="200" IsEditable="True"/>
                     </StackPanel>
-                    <Button Content="Hozzáadás" Click="AddBook_Click" Width="100" HorizontalAlignment="Left"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Hozzáadás" Click="AddBook_Click" Width="100" Margin="80,0,5,0"/>
+                        <Button Content="Eltávolítás" Click="RemoveBook_Click" Width="100" Margin="0,0,5,0"/>
+                        <Button Content="Betöltés" Click="LoadBook_Click" Width="100" Margin="0,0,5,0"/>
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
 
@@ -69,15 +73,25 @@
 
 
 
-using System;
+
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace konyvtar
 {
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
     public class Book
     {
         public string Title { get; set; }
@@ -209,6 +223,61 @@ namespace konyvtar
                 filtered = filtered.Where(b => b.Year == filterYear);
 
             bookListView.ItemsSource = new ObservableCollection<Book>(filtered);
+        }
+
+        private void RemoveBook_Click(object sender, RoutedEventArgs e)
+        {
+            if (bookListView.SelectedItem is Book selectedBook)
+            {
+                allBooks.Remove(selectedBook);
+
+                // Frissítsük a fájlt: újraírjuk az összes megmaradt könyvet
+                Directory.CreateDirectory("Data");
+                File.WriteAllLines("Data/konyvek.txt", allBooks.Select(b =>
+                    $"{b.Title};{b.Author};{b.Year};{b.Genre}"
+                ));
+
+                ApplyFilters();
+            }
+            else
+            {
+                MessageBox.Show("Válassz ki egy eltávolítandó könyvet.");
+            }
+        }
+
+        private void LoadBook_Click(object sender, RoutedEventArgs e)
+        {
+            if (!File.Exists("Data/konyvek.txt"))
+            {
+                MessageBox.Show("Nincs betölthető fájl.");
+                return;
+            }
+
+            allBooks.Clear();
+            genres.Clear();
+
+            foreach (string line in File.ReadAllLines("Data/konyvek.txt"))
+            {
+                var parts = line.Split(';');
+                if (parts.Length == 4 &&
+                    int.TryParse(parts[2], out int year))
+                {
+                    var book = new Book
+                    {
+                        Title = parts[0],
+                        Author = parts[1],
+                        Year = year,
+                        Genre = parts[3]
+                    };
+
+                    allBooks.Add(book);
+
+                    if (!genres.Contains(book.Genre))
+                        genres.Add(book.Genre);
+                }
+            }
+
+            ApplyFilters();
         }
     }
 }
