@@ -1,0 +1,207 @@
+<Window x:Class="konyvtar.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Könyvtár" Height="550" Width="900"
+        Background="#f9f9f9"
+        FontFamily="Segoe UI">
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Background="White" Padding="10" BorderBrush="#ddd" BorderThickness="1" >
+            <StackPanel>
+                <TextBlock Text="Kategóriák" FontSize="18" FontWeight="Bold" Margin="0,0,0,10" Foreground="#333"/>
+                <TreeView x:Name="CategoryTree" SelectedItemChanged="CategoryTree_SelectedItemChanged"
+                          Background="White" BorderThickness="0">
+                    <TreeView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </StackPanel>
+        </Border>
+        <Rectangle Grid.Column="1" Width="1" Fill="#ddd" />
+        <StackPanel Grid.Column="2">
+            <Border Background="White" Padding="15" BorderBrush="#ddd" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Új könyv hozzáadása" FontSize="18" FontWeight="Bold" Margin="0,0,0,15" Foreground="#333"/>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Cím:" VerticalAlignment="Center" Foreground="#555"/>
+                        <TextBox x:Name="titleBox" Grid.Column="1" Height="28" Margin="5,0" Padding="5" Background="#fafafa" />
+                    </Grid>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Szerző:" VerticalAlignment="Center" Foreground="#555"/>
+                        <TextBox x:Name="authorBox" Grid.Column="1" Height="28" Margin="5,0" Padding="5" Background="#fafafa" />
+                    </Grid>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Év:" VerticalAlignment="Center" Foreground="#555"/>
+                        <TextBox x:Name="yearBox" Grid.Column="1" Height="28" Margin="5,0" Padding="5" Background="#fafafa" />
+                    </Grid>
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Műfaj:" VerticalAlignment="Center" Foreground="#555"/>
+                        <TextBox x:Name="genreBox" Grid.Column="1" Height="28" Margin="5,0" Padding="5" Background="#fafafa" />
+                    </Grid>
+                    <Button x:Name="AddBook" Content="Hozzáadás" Width="100" Height="35" 
+                            Background="#4CAF50" Foreground="White" FontWeight="SemiBold" 
+                            BorderThickness="0" HorizontalAlignment="Left"
+                            Click="AddBook_Click" Cursor="Hand"/>
+                </StackPanel>
+            </Border>
+            <TextBlock Text="Könyvek listája" FontSize="18" FontWeight="Bold" Margin="0,25,0,10" Foreground="#333" />
+            <Border Background="White" Padding="10" BorderBrush="#ddd" BorderThickness="1" MinHeight="200">
+                <ListView x:Name="bookListView" BorderThickness="0" Background="White" Margin="0,0,0,10">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Cím" Width="200" DisplayMemberBinding="{Binding Title}"/>
+                            <GridViewColumn Header="Szerző" Width="150" DisplayMemberBinding="{Binding Author}"/>
+                            <GridViewColumn Header="Év" Width="80" DisplayMemberBinding="{Binding Year}"/>
+                            <GridViewColumn Header="Műfaj" Width="150" DisplayMemberBinding="{Binding Genre}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+            <Button Content="Kölcsönzés (kiválasztott könyv eltávolítása)" Height="35" Width="280"
+                    Background="#F44336" Foreground="White" FontWeight="SemiBold"
+                    Click="BorrowBook_Click" Cursor="Hand" HorizontalAlignment="Left"/>
+        </StackPanel>
+    </Grid>
+</Window>
+
+
+
+
+using System;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace konyvtar
+{
+    public class Book
+    {
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public int Year { get; set; }
+        public string Genre { get; set; }
+
+        public override string ToString() => $"{Title} - {Author} ({Year})";
+    }
+
+    public class Category
+    {
+        public string Name { get; set; }
+        public ObservableCollection<Book> Books { get; set; } = new();
+    }
+    public partial class MainWindow : Window
+    {
+        private ObservableCollection<Category> Categories = new ObservableCollection<Category>();
+        private Category selectedCategory;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            InitData();
+        }
+
+        private void InitData()
+        {
+            Categories = new ObservableCollection<Category>
+            {
+                new Category
+                {
+                    Name = "Sci-Fi",
+                    Books =
+                    {
+                        new Book { Title = "Dűne", Author = "Frank Herbert", Year = 1965, Genre = "Sci-Fi" },
+                        new Book { Title = "Alapítvány", Author = "Isaac Asimov", Year = 1951, Genre = "Sci-Fi" }
+                    }
+                },
+                new Category
+                {
+                    Name = "Történelem",
+                    Books =
+                    {
+                        new Book { Title = "A második világháború", Author = "Antony Beevor", Year = 2012, Genre = "Történelem" }
+                    }
+                }
+            };
+
+            CategoryTree.ItemsSource = Categories;
+        }
+
+        private void CategoryTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is Category cat)
+            {
+                selectedCategory = cat;
+                bookListView.ItemsSource = selectedCategory.Books;
+            }
+        }
+
+        private void AddBook_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedCategory == null)
+            {
+                MessageBox.Show("Először válassz ki egy kategóriát.");
+                return;
+            }
+
+            if (!int.TryParse(yearBox.Text, out int year))
+            {
+                MessageBox.Show("Az év mező nem érvényes.");
+                return;
+            }
+
+            if (year > DateTime.Now.Year)
+            {
+                MessageBox.Show("Jövőbeni évszám nem elfogadható.");
+                return;
+            }
+
+            Book newBook = new Book
+            {
+                Title = titleBox.Text,
+                Author = authorBox.Text,
+                Year = year,
+                Genre = genreBox.Text
+            };
+
+            selectedCategory.Books.Add(newBook);
+            bookListView.Items.Refresh();
+
+            titleBox.Text = authorBox.Text = genreBox.Text = yearBox.Text = "";
+        }
+
+        private void BorrowBook_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedCategory == null || bookListView.SelectedItem is not Book selectedBook)
+            {
+                MessageBox.Show("Válassz ki egy könyvet a kölcsönzéshez.");
+                return;
+            }
+
+            selectedCategory.Books.Remove(selectedBook);
+            bookListView.Items.Refresh();
+            MessageBox.Show($"A könyv („{selectedBook.Title}”) kikölcsönözve.");
+        }
+    }
+}
