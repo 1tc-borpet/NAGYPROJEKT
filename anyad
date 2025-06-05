@@ -1,71 +1,61 @@
 <Window x:Class="konyvtar.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Könyvtár" Height="600" Width="950" FontFamily="Segoe UI">
+        Title="Könyvtár" Height="500" Width="800">
+
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Bal oldal: Műfajok és szűrés -->
-        <StackPanel>
-            <TextBlock Text="Műfajok" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-            <ListBox x:Name="genreListBox" SelectionChanged="genreListBox_SelectionChanged" Height="250"/>
+        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+            <TextBlock Text="Műfajok:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <ListBox x:Name="genreListBox" Height="200" SelectionChanged="genreListBox_SelectionChanged"/>
 
-            <TextBlock Text="Új műfaj hozzáadása:" Margin="0,10,0,2"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="newGenreBox" Width="130" Margin="0,0,5,0"/>
-                <Button Content="Hozzáadás" Width="60" Click="AddGenre_Click"/>
-            </StackPanel>
-
-            <TextBlock Text="Év szűrés:" Margin="0,20,0,2"/>
+            <TextBlock Text="Év szerinti szűrés:" Margin="0,20,0,2"/>
             <TextBox x:Name="yearFilterBox" TextChanged="yearFilterBox_TextChanged"/>
         </StackPanel>
 
-        <Rectangle Grid.Column="1" Width="1" Fill="#ccc"/>
+        <StackPanel Grid.Column="1">
+            <TextBlock Text="Könyv hozzáadása:" FontWeight="Bold" Margin="0,0,0,5"/>
 
-        <!-- Jobb oldal: Könyv hozzáadás + lista -->
-        <StackPanel Grid.Column="2">
-            <GroupBox Header="Új könyv hozzáadása" Margin="0,0,0,15">
-                <StackPanel Margin="10">
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                        <TextBlock Text="Cím:" Width="80"/>
-                        <TextBox x:Name="titleBox" Width="200"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                        <TextBlock Text="Szerző:" Width="80"/>
-                        <TextBox x:Name="authorBox" Width="200"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                        <TextBlock Text="Év:" Width="80"/>
-                        <TextBox x:Name="yearBox" Width="200"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10" VerticalAlignment="Center">
-                        <TextBlock Text="Műfaj:" Width="80" VerticalAlignment="Center"/>
-                        <ComboBox x:Name="genreComboBox" Width="200" IsEditable="True"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Hozzáadás" Click="AddBook_Click" Width="100" Margin="80,0,5,0"/>
-                        <Button Content="Eltávolítás" Click="RemoveBook_Click" Width="100" Margin="0,0,5,0"/>
-                        <Button Content="Betöltés" Click="LoadBook_Click" Width="100" Margin="0,0,5,0"/>
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Cím:" Width="50" VerticalAlignment="Center"/>
+                <TextBox x:Name="titleBox" Width="200"/>
+            </StackPanel>
 
-            <TextBlock Text="Könyvek listája" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
-            <ListView x:Name="bookListView" Height="300" Margin="0,0,0,10">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Szerző:" Width="50" VerticalAlignment="Center"/>
+                <TextBox x:Name="authorBox" Width="200"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <TextBlock Text="Év:" Width="50" VerticalAlignment="Center"/>
+                <TextBox x:Name="yearBox" Width="100"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Műfaj:" Width="50" VerticalAlignment="Center"/>
+                <ComboBox x:Name="genreComboBox" Width="150" IsEditable="True"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10" >
+                <Button Content="Hozzáadás" Click="AddBook_Click" Width="100" Margin="0,0,5,0"/>
+                <Button Content="Kölcsönzés" Click="BorrowBook_Click" Width="100"/>
+            </StackPanel>
+
+            <TextBlock Text="Könyvek:" FontWeight="Bold" Margin="0,0,0,5"/>
+            <ListView x:Name="bookListView" Height="250" >
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Cím" DisplayMemberBinding="{Binding Title}" Width="200"/>
-                        <GridViewColumn Header="Szerző" DisplayMemberBinding="{Binding Author}" Width="150"/>
-                        <GridViewColumn Header="Év" DisplayMemberBinding="{Binding Year}" Width="70"/>
-                        <GridViewColumn Header="Műfaj" DisplayMemberBinding="{Binding Genre}" Width="100"/>
+                        <GridViewColumn Header="Cím" Width="200" DisplayMemberBinding="{Binding Title}"/>
+                        <GridViewColumn Header="Szerző" Width="150" DisplayMemberBinding="{Binding Author}"/>
+                        <GridViewColumn Header="Év" Width="50" DisplayMemberBinding="{Binding Year}"/>
+                        <GridViewColumn Header="Műfaj" Width="100" DisplayMemberBinding="{Binding Genre}"/>
                     </GridView>
                 </ListView.View>
             </ListView>
-            <Button Content="Kölcsönzés" Click="BorrowBook_Click" Width="100"/>
         </StackPanel>
     </Grid>
 </Window>
@@ -74,24 +64,15 @@
 
 
 
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Text;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace konyvtar
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public class Book
     {
         public string Title { get; set; }
@@ -111,32 +92,17 @@ namespace konyvtar
         {
             InitializeComponent();
 
+            genres.Add("Életrajz");
+            genres.Add("Történelem");
+            
+
+            allBooks.Add(new Book { Title = "HErBY - A magyar vlogger", Author = "Egyed Anikó", Year = 2023, Genre = "Életrajz" });
+            allBooks.Add(new Book { Title = "Rengéshullámok", Author = "Helikon Kiadó", Year = 2010, Genre = "Történelem" });
+            allBooks.Add(new Book { Title = "Paprikaföldektől a HÉTCSILLAGOS életig", Author = "Jákob Zoltán", Year = 2023, Genre = "Életrajz" });
+
             genreListBox.ItemsSource = genres;
             genreComboBox.ItemsSource = genres;
             bookListView.ItemsSource = allBooks;
-
-            // (Opcionális) Fájlok betöltése ide, ha kell
-        }
-
-        private void AddGenre_Click(object sender, RoutedEventArgs e)
-        {
-            string newGenre = newGenreBox.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(newGenre))
-            {
-                MessageBox.Show("Adj meg egy műfajt!");
-                return;
-            }
-
-            if (!genres.Contains(newGenre))
-            {
-                genres.Add(newGenre);
-                newGenreBox.Text = "";
-            }
-            else
-            {
-                MessageBox.Show("Ez a műfaj már létezik.");
-            }
         }
 
         private void AddBook_Click(object sender, RoutedEventArgs e)
@@ -159,7 +125,7 @@ namespace konyvtar
                 return;
             }
 
-            var book = new Book { Title = title, Author = author, Year = year, Genre = genre };
+            Book book = new Book { Title = title, Author = author, Year = year, Genre = genre };
             allBooks.Add(book);
 
             if (!genres.Contains(genre))
@@ -174,9 +140,8 @@ namespace konyvtar
         {
             if (bookListView.SelectedItem is Book book)
             {
-                allBooks.Remove(book);
                 SaveBorrowedBook(book);
-                ApplyFilters();
+                MessageBox.Show($"A(z) \"{book.Title}\" könyv kölcsönözve.");
             }
             else
             {
@@ -206,15 +171,13 @@ namespace konyvtar
         {
             ApplyFilters();
         }
-
         private void yearFilterBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             ApplyFilters();
         }
-
         private void ApplyFilters()
         {
-            var filtered = allBooks.AsEnumerable();
+            IEnumerable<Book> filtered = allBooks.AsEnumerable();
 
             if (genreListBox.SelectedItem is string selectedGenre)
                 filtered = filtered.Where(b => b.Genre == selectedGenre);
@@ -223,61 +186,6 @@ namespace konyvtar
                 filtered = filtered.Where(b => b.Year == filterYear);
 
             bookListView.ItemsSource = new ObservableCollection<Book>(filtered);
-        }
-
-        private void RemoveBook_Click(object sender, RoutedEventArgs e)
-        {
-            if (bookListView.SelectedItem is Book selectedBook)
-            {
-                allBooks.Remove(selectedBook);
-
-                // Frissítsük a fájlt: újraírjuk az összes megmaradt könyvet
-                Directory.CreateDirectory("Data");
-                File.WriteAllLines("Data/konyvek.txt", allBooks.Select(b =>
-                    $"{b.Title};{b.Author};{b.Year};{b.Genre}"
-                ));
-
-                ApplyFilters();
-            }
-            else
-            {
-                MessageBox.Show("Válassz ki egy eltávolítandó könyvet.");
-            }
-        }
-
-        private void LoadBook_Click(object sender, RoutedEventArgs e)
-        {
-            if (!File.Exists("Data/konyvek.txt"))
-            {
-                MessageBox.Show("Nincs betölthető fájl.");
-                return;
-            }
-
-            allBooks.Clear();
-            genres.Clear();
-
-            foreach (string line in File.ReadAllLines("Data/konyvek.txt"))
-            {
-                var parts = line.Split(';');
-                if (parts.Length == 4 &&
-                    int.TryParse(parts[2], out int year))
-                {
-                    var book = new Book
-                    {
-                        Title = parts[0],
-                        Author = parts[1],
-                        Year = year,
-                        Genre = parts[3]
-                    };
-
-                    allBooks.Add(book);
-
-                    if (!genres.Contains(book.Genre))
-                        genres.Add(book.Genre);
-                }
-            }
-
-            ApplyFilters();
         }
     }
 }
