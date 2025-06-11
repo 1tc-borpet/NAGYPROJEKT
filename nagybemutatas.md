@@ -179,6 +179,8 @@ namespace konyvtar
             if (bookListView.SelectedItem is Book book)
             {
                 SaveBorrowedBook(book);
+                allBooks.Remove(book);
+                ApplyFilters(); 
                 MessageBox.Show($"A(z) \"{book.Title}\" könyv kölcsönözve.");
             }
             else
@@ -186,6 +188,7 @@ namespace konyvtar
                 MessageBox.Show("Válassz ki egy könyvet a kölcsönzéshez.");
             }
         }
+
 
         private void SaveBookToFile(Book book)
         {
