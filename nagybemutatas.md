@@ -234,4 +234,4 @@ namespace konyvtar
 
 ## 🛠️ Fejlesztette
 
-Morzsa Milán Dominik,Boros Péter
+Morzsa Milán Dominik,Boros Péter,ChatGPT
