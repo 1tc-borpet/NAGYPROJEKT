@@ -1,19 +1,19 @@
-# 📚 Könyvtárkezelő alkalmazás (WPF)
+#  Könyvtárkezelő alkalmazás (WPF)
 
 Ez a WPF-alapú C# alkalmazás egy egyszerű **könyvtárkezelő rendszer**, amellyel könyveket lehet:
 - hozzáadni,
 - műfaj és év szerint szűrni,
 - valamint kölcsönözni.
 
-## 🎯 Funkciók
+##  Funkciók
 
-- ✅ Könyv hozzáadása (cím, szerző, év, műfaj)
-- 🎨 Dinamikus műfajlista
-- 🔍 Műfaj és év szerinti szűrés
-- 📤 Könyvek mentése fájlba (`konyvek.txt`)
-- 📥 Kölcsönzések naplózása (`kolcsonzesek.txt`)
+-  Könyv hozzáadása (cím, szerző, év, műfaj)
+-  Dinamikus műfajlista
+-  Műfaj és év szerinti szűrés
+-  Könyvek mentése fájlba (`konyvek.txt`)
+-  Kölcsönzések naplózása (`kolcsonzesek.txt`)
 
-## 🖼️ Képernyőképek
+##  Képernyőképek
 
 
 | Főképernyő | Könyv hozzáadása |
@@ -22,7 +22,7 @@ Ez a WPF-alapú C# alkalmazás egy egyszerű **könyvtárkezelő rendszer**, ame
 
 
 
-## ⚙️ Használat
+##  Használat
 
 1. Nyisd meg a `MainWindow.xaml` fájlt Visual Studio-ban.
 2. Futtasd az alkalmazást (F5).
@@ -32,10 +32,10 @@ Ez a WPF-alapú C# alkalmazás egy egyszerű **könyvtárkezelő rendszer**, ame
 
 ---
 
-## 🔽 Teljes forráskód
+##  Teljes forráskód
 
 <details>
-<summary><strong>📁 Kattints a kód megnyitásához</strong></summary>
+<summary><strong> Kattints a kód megnyitásához</strong></summary>
 
 ### `MainWindow.xaml`
 ```xml
@@ -232,6 +232,6 @@ namespace konyvtar
 ```
 </details>
 
-## 🛠️ Fejlesztette
+##  Fejlesztette
 
 Morzsa Milán Dominik,Boros Péter,ChatGPT
